@@ -1,1 +1,1 @@
-from .main import Trainer
+from .main import SwaCallback, SwaModel

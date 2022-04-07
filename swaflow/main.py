@@ -99,3 +99,18 @@ class SwaModel(tf.keras.Model):
         # Sample using SWAG using recorded model moments
         self.sample_weights(scale=scale)
         return self.call(x)
+
+    def generate_swag_samples(self, x, n_samples=100, scale=0.5):
+        # Generate samples using SWAG using recorded model moments
+        samples = []
+        for i in range(n_samples):
+            samples.append(self.forward_swag(x, scale=scale))
+        samples = tf.stack(samples, axis=0)
+        return samples
+
+    def predict_with_errors(self, x, n_samples=100, scale=0.5):
+        """
+        Use swag to predict a mean and standard deviation for each input
+        """
+        samples = self.generate_swag_samples(x, n_samples=n_samples, scale=scale)
+        return tf.reduce_mean(samples, axis=0), tf.math.reduce_std(samples, axis=0)
