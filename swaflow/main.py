@@ -2,6 +2,14 @@ import tensorflow as tf
 import numpy as np
 
 
+class SwaCallback(tf.keras.callbacks.Callback):
+    def on_epoch_end(self, epoch, logs=None):
+        """
+        This callback is called at the end of every epoch.
+        """
+        self.model.aggregate_model()
+
+
 class SwaModel(tf.keras.Model):
     def __init__(self):
         """
@@ -57,7 +65,7 @@ class SwaModel(tf.keras.Model):
         for i, layer in enumerate(currWeights):
             n = np.prod(layer.shape)
             w = arr[currIndex:currIndex+n]
-            currIndex+=n
+            currIndex += n
             newWeights.append(tf.reshape(w, layer.shape))
         self.set_weights(newWeights)
 
